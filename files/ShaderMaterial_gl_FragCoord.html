@@ -217,13 +217,18 @@ void main()	{
 }
 </script>
 <script id="fragmentShader" type="x-shader/x-fragment">
-void main()	{
+void main_()	{
 	//ピクセル描画色の指定
 	vec2 p =  gl_FragCoord.xy/ vec2(500, 500);
 	float r = p.x;
 	float g = p.y;
 	float b = 1.0 - (p.x + p.y)/2.0;
 	gl_FragColor=vec4( r, g, b, 1.0);
+}
+
+void main(){
+	vec2 p =  gl_FragCoord.xy/ vec2(500, 500);
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
 </script>
 </head>
