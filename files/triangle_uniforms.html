@@ -250,8 +250,8 @@ function makePicture(){
 	シェーダーの定義
  ---------------------------------------------------------------------------------------->
 <script id="vertexShader" type="x-shader/x-vertex">
-attribute vec3 color;
-varying vec3 vColor;
+attribute vec3 color; // 頂点情報などを入れる
+varying vec3 vColor; // VertexShaderからFragmentShaderに変数を渡すときに使う
 void main()	{
 	vColor = color;
 	gl_Position = projectionMatrix * modelViewMatrix * vec4( position , 1.0 );

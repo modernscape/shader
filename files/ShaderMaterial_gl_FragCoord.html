@@ -218,7 +218,7 @@ void main()	{
 </script>
 <script id="fragmentShader" type="x-shader/x-fragment">
 void main_()	{
-	//ピクセル描画色の指定
+	// ピクセル描画色の指定
 	vec2 p =  gl_FragCoord.xy/ vec2(500, 500);
 	float r = p.x;
 	float g = p.y;
@@ -227,7 +227,10 @@ void main_()	{
 }
 
 void main(){
-    gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+	// uniform vec2 u_resolution;
+	// vec2 pos = gl_FragCoord.xy / u_resolution.xy;
+	vec2 pos = gl_FragCoord.xy / vec2(500, 500);
+    gl_FragColor = vec4(1.0, pos, 1.0);
 }
 </script>
 </head>
