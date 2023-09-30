@@ -211,15 +211,29 @@ function makePicture(){
 	シェーダーの定義
  ---------------------------------------------------------------------------------------->
 <script id="vertexShader" type="x-shader/x-vertex">
+	// 頂点データの宣言
+	attribute vec3 color; // 頂点情報などを入れる
+
+	// 受け渡し変数の宣言
+	varying vec3 vColor; // VertexShaderからFragmentShaderに変数を渡すときに使う
+
 void main()	{
-	//頂点座標の指定
+
+
+	// 頂点座標の指定
 	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 </script>
 <script id="fragmentShader" type="x-shader/x-fragment">
-void main_()	{
+// 受け渡し変数の宣言
+varying vec3 vColor;
+void main1()	{
+	gl_FragColor = vec4( 1.0, 0.5, 1.0, 1.0);
+}
+
+void main2() {
 	// ピクセル描画色の指定
-	vec2 p =  gl_FragCoord.xy/ vec2(500, 500);
+	vec2 p =  gl_FragCoord.xy / vec2(500, 500);
 	float r = p.x;
 	float g = p.y;
 	float b = 1.0 - (p.x + p.y)/2.0;
@@ -232,6 +246,7 @@ void main(){
 	vec2 pos = gl_FragCoord.xy / vec2(500, 500);
     gl_FragColor = vec4(1.0, pos, 1.0);
 }
+
 </script>
 </head>
 <body>
