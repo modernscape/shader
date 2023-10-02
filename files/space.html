@@ -135,6 +135,9 @@ function initObject() {
 	var geometry = new THREE.PlaneGeometry(100, 100, 10, 10);
 	//材質オブジェクトの宣言と生成
 	var material = new THREE.ShaderMaterial({
+		uniforms: {
+			uWidth : { value: 500 }
+		},
 		vertexShader: document.getElementById('vertexShader').textContent,
 		fragmentShader: document.getElementById('fragmentShader').textContent
 	});
@@ -202,7 +205,6 @@ function makePicture(){
 
 	//id="thumbnails"のdiv要素の子要素にa要素を追加	
 	document.getElementsByTagName( "body" )[0].appendChild(a);
-
 	makePictureFlag = false;
 
 }
@@ -214,19 +216,22 @@ function makePicture(){
 	// 頂点データの宣言
 	attribute vec3 color; // 頂点情報などを入れる
 
+	uniform float uWidth;
+	varying float vWidth;
+
 	// 受け渡し変数の宣言
 	varying vec3 vColor; // VertexShaderからFragmentShaderに変数を渡すときに使う
 
 void main()	{
-
-
 	// 頂点座標の指定
+	vWidth = uWidth;
 	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 </script>
 <script id="fragmentShader" type="x-shader/x-fragment">
 // 受け渡し変数の宣言
-varying vec3 vColor;
+// varying vec3 vColor;
+
 void main00()	{
 	gl_FragColor = vec4( 1.0, 0.5, 1.0, 1.0);
 }
@@ -247,8 +252,9 @@ void main03(){
     gl_FragColor = vec4(1.0, pos, 1.0);
 }
 
+varying float vWidth;
 void main(){
-    vec2 pos = gl_FragCoord.xy / vec2(500, 500);
+    vec2 pos = gl_FragCoord.xy / vec2(vWidth, 500);
     vec3 RED = vec3(1.0, 0.3, 0.0);
     vec3 BLUE = vec3(0.0, 0.0, 1.0);
     vec3 col = mix(RED, BLUE, pos.x);
