@@ -7,7 +7,7 @@
 <script src="../three.js_r79/examples/js/controls/TrackballControls.js"></script> <!-- トラックボール用ライブラリ -->
 <style>
 *{padding:0px; margin:0px}
-div#canvas-frame{
+div#canvas-frame {
 	width: 500px;  /* 横幅 */
 	height: 500px; /* 縦幅 */
 	overflow:hidden;
@@ -40,6 +40,12 @@ var renderer,    //レンダラーオブジェクト
 function initThree() {
 	//キャンバスフレームDOM要素の取得
 	canvasFrame = document.getElementById('canvas-frame');
+
+	// const winW = document.body.clientWidth;
+	// const winH = document.documentElement.clientHeight;
+	// canvasFrame.style.width = winW + "px";
+	// canvasFrame.style.height = winH + "px";
+
 	//レンダラーオブジェクトの生成
 	renderer = new THREE.WebGLRenderer({ antialias: true });
 	//renderer = new THREE.CanvasRenderer();//<----------------------（canvasレンダラー）
@@ -127,7 +133,7 @@ function initObject() {
 	//軸オブジェクトの生成
 	axis = new THREE.AxisHelper(100);
 	//軸オブジェクトのシーンへの追加
-	scene.add(axis);
+	// scene.add(axis);
 	//軸オブジェクトの位置座標を設定
 	axis.position.set(0, 0, 0);
 
@@ -136,7 +142,7 @@ function initObject() {
 	//材質オブジェクトの宣言と生成
 	var material = new THREE.ShaderMaterial({
 		uniforms: {
-			uWidth : { value: 500 }
+			uWidth : { value: canvasFrame.clientWidth }
 		},
 		vertexShader: document.getElementById('vertexShader').textContent,
 		fragmentShader: document.getElementById('fragmentShader').textContent
@@ -213,54 +219,32 @@ function makePicture(){
 	シェーダーの定義
  ---------------------------------------------------------------------------------------->
 <script id="vertexShader" type="x-shader/x-vertex">
-	// 頂点データの宣言
-	attribute vec3 color; // 頂点情報などを入れる
-
-	uniform float uWidth;
-	varying float vWidth;
-
-	// 受け渡し変数の宣言
-	varying vec3 vColor; // VertexShaderからFragmentShaderに変数を渡すときに使う
-
 void main()	{
-	// 頂点座標の指定
-	vWidth = uWidth;
 	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 </script>
 <script id="fragmentShader" type="x-shader/x-fragment">
-// 受け渡し変数の宣言
-// varying vec3 vColor;
-
-void main00()	{
-	gl_FragColor = vec4( 1.0, 0.5, 1.0, 1.0);
-}
-
-void main01() {
-	// ピクセル描画色の指定
-	vec2 p =  gl_FragCoord.xy / vec2(500, 500);
-	float r = p.x;
-	float g = p.y;
-	float b = 1.0 - (p.x + p.y)/2.0;
-	gl_FragColor=vec4(r, g, b, 1.0);
-}
-
-void main03(){
-	// uniform vec2 u_resolution;
-	// vec2 pos = gl_FragCoord.xy / u_resolution.xy;
-	vec2 pos = gl_FragCoord.xy / vec2(500, 500);
-    gl_FragColor = vec4(1.0, pos, 1.0);
-}
-
-varying float vWidth;
 void main(){
-    vec2 pos = gl_FragCoord.xy / vec2(vWidth, 500);
-    vec3 RED = vec3(1.0, 0.3, 0.0);
-    vec3 BLUE = vec3(0.0, 0.0, 1.0);
-    vec3 col = mix(RED, BLUE, pos.x);
+    vec2 pos = gl_FragCoord.xy / vec2(500, 500);
+
+	vec3 col3[3];
+	col3[0] = vec3(1.0, 0.0, 0.0);
+	col3[1] = vec3(0.0, 0.0, 1.0);
+	col3[2] = vec3(0.0, 1.0, 0.0);
+
+    pos.x *= 2.0;
+    int ind = int(pos.x); // 0, 1
+	// こう書けない
+    // vec3 col = mix(col3[ind], col3[ind + 1], fract(pos.x)); 
+	
+	vec3 col;
+	if(ind == 0) {
+       col = mix(col3[0], col3[1], fract(pos.x));
+    } else {
+		   col = mix(col3[1], col3[2], fract(pos.x));
+    }
     gl_FragColor = vec4(col, 1.0);
 }
-
 </script>
 </head>
 <body>
