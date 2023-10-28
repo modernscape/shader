@@ -238,7 +238,7 @@ void main(){
 
     float n = 4.0;
     pos *= n;
-    channel = int(2.0 * gl_FragCoord.x / 500);
+    channel = 0; // int(2.0 * gl_FragCoord.x / 500);
     if (channel == 0){   //left: step
         pos = floor(pos) + step(0.5, fract(pos));
     } else {    //right: smoothstep
