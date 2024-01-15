@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>0_0_helloWorld</title>
+<title>1_3_posterization</title>
 <script src="../../three.js_r79/build/three.js"></script>  <!-- Three.js用ライブラリ -->
 <script src="../../three.js_r79/examples/js/controls/TrackballControls.js"></script> <!-- トラックボール用ライブラリ -->
 <style>
@@ -225,8 +225,30 @@ void main()	{
 }
 </script>
 <script id="fragmentShader" type="x-shader/x-fragment">
+uniform float u_time;
+int channel;
 void main(){
-    gl_FragColor = vec4(0.5);
+    vec2 pos = gl_FragCoord.xy / vec2(500, 500);
+
+	vec3 col4[4];
+	col4[0] = vec3(1.0, 0.0, 0.0);
+	col4[1] = vec3(1.0, 1.0, 0.0);
+	col4[2] = vec3(1.0, 0.0, 1.0);
+	col4[3] = vec3(1.0, 1.0, 1.0);
+
+    float n = 4.0;
+    pos *= n;
+    channel = 0; // int(2.0 * gl_FragCoord.x / 500);
+    if (channel == 0){   //left: step
+        pos = floor(pos) + step(0.5, fract(pos));
+    } else {    //right: smoothstep
+        float thr = 0.25 * sin(u_time);
+        pos = floor(pos) + smoothstep(0.25 + thr, 0.75 - thr, fract(pos));
+    }
+	// smoothstep(edge0,edge1,x)
+    pos /= n;
+    vec3 col = mix(mix(col4[0], col4[1], pos.x), mix(col4[2], col4[3], pos.x), pos.y);
+    gl_FragColor = vec4(col, 1.0);
 }
 </script>
 </head>

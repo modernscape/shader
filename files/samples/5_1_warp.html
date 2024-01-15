@@ -1,354 +1,361 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>gl_space</title>
-<script src="../three.js_r79/build/three.js"></script>  <!-- Three.js用ライブラリ -->
-<script src="../three.js_r79/examples/js/controls/TrackballControls.js"></script> <!-- トラックボール用ライブラリ -->
-<style>
-*{padding:0px; margin:0px}
-div#canvas-frame {
-	width: 500px;  /* 横幅 */
-	height: 500px; /* 縦幅 */
-	overflow:hidden;
-}
-</style>
-<script>
-////////////////////////////////////////////////////////////////////
-// windowイベントの定義
-////////////////////////////////////////////////////////////////////
-window.addEventListener("load", function () {
-	threeStart(); //Three.jsのスタート関数の実行
-});
-////////////////////////////////////////////////////////////////////
-// Three.jsスタート関数の定義
-////////////////////////////////////////////////////////////////////
-function threeStart() {
-	initThree();  //Three.js初期化関数の実行
-	//initLight();  //光源初期化関数の実行
-	initObject(); //オブジェクト初期化関数の実行
-	initCamera(); //カメラ初期化関数の実行
-	loop();       //無限ループ関数の実行
-}
-////////////////////////////////////////////////////////////////////
-// Three.js初期化関数の定義
-////////////////////////////////////////////////////////////////////
-//グローバル変数の宣言
-var renderer,    //レンダラーオブジェクト
-    scene,       //シーンオブジェクト
-    canvasFrame; //キャンバスフレームのDOM要素
-function initThree() {
-	//キャンバスフレームDOM要素の取得
-	canvasFrame = document.getElementById('canvas-frame');
+  <head>
+    <meta charset="UTF-8" />
+    <title>これを表示させる 5_1_warp</title>
+    <script src="../../three.js_r79/build/three.js"></script>
+    <!-- Three.js用ライブラリ -->
+    <script src="../../three.js_r79/examples/js/controls/TrackballControls.js"></script>
+    <!-- トラックボール用ライブラリ -->
+    <style>
+      * {
+        padding: 0px;
+        margin: 0px;
+      }
+      div#canvas-frame {
+        width: 500px; /* 横幅 */
+        height: 500px; /* 縦幅 */
+        overflow: hidden;
+      }
+    </style>
+    <script>
+      ////////////////////////////////////////////////////////////////////
+      // windowイベントの定義
+      ////////////////////////////////////////////////////////////////////
+      window.addEventListener("load", function () {
+        threeStart(); //Three.jsのスタート関数の実行
+      });
+      ////////////////////////////////////////////////////////////////////
+      // Three.jsスタート関数の定義
+      ////////////////////////////////////////////////////////////////////
+      function threeStart() {
+        initThree(); //Three.js初期化関数の実行
+        //initLight();  //光源初期化関数の実行
+        initObject(); //オブジェクト初期化関数の実行
+        initCamera(); //カメラ初期化関数の実行
+        loop(); //無限ループ関数の実行
+      }
+      ////////////////////////////////////////////////////////////////////
+      // Three.js初期化関数の定義
+      ////////////////////////////////////////////////////////////////////
+      //グローバル変数の宣言
+      var renderer, //レンダラーオブジェクト
+        scene, //シーンオブジェクト
+        canvasFrame; //キャンバスフレームのDOM要素
+      function initThree() {
+        //キャンバスフレームDOM要素の取得
+        canvasFrame = document.getElementById("canvas-frame");
 
-	// const winW = document.body.clientWidth;
-	// const winH = document.documentElement.clientHeight;
-	// canvasFrame.style.width = winW + "px";
-	// canvasFrame.style.height = winH + "px";
+        // const winW = document.body.clientWidth;
+        // const winH = document.documentElement.clientHeight;
+        // canvasFrame.style.width = winW + "px";
+        // canvasFrame.style.height = winH + "px";
 
-	//レンダラーオブジェクトの生成
-	renderer = new THREE.WebGLRenderer({ antialias: true });
-	//renderer = new THREE.CanvasRenderer();//<----------------------（canvasレンダラー）
+        //レンダラーオブジェクトの生成
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        //renderer = new THREE.CanvasRenderer();//<----------------------（canvasレンダラー）
 
-	if (!renderer) alert('Three.js の初期化に失敗しました');
-	//レンダラーのサイズの設定
-	renderer.setSize(canvasFrame.clientWidth, canvasFrame.clientHeight);
-	//キャンバスフレームDOM要素にcanvas要素を追加
-	canvasFrame.appendChild(renderer.domElement);
+        if (!renderer) alert("Three.js の初期化に失敗しました");
+        //レンダラーのサイズの設定
+        renderer.setSize(canvasFrame.clientWidth, canvasFrame.clientHeight);
+        //キャンバスフレームDOM要素にcanvas要素を追加
+        canvasFrame.appendChild(renderer.domElement);
 
-	//レンダラークリアーカラーの設定
-	renderer.setClearColor(0xEEEEEE, 1.0);
+        //レンダラークリアーカラーの設定
+        renderer.setClearColor(0xeeeeee, 1.0);
 
-	//シーンオブジェクトの生成
-	scene = new THREE.Scene();
-}
-////////////////////////////////////////////////////////////////////
-// カメラ初期化関数の定義
-////////////////////////////////////////////////////////////////////
-//グローバル変数の宣言
-var camera;    //カメラオブジェクト
-function initCamera() {
-	//カメラオブジェクトの生成
-	camera = new THREE.PerspectiveCamera(45, canvasFrame.clientWidth / canvasFrame.clientHeight, 1, 10000);
-	//カメラの位置の設定
-	camera.position.set(0, 0, 130);
-	//カメラの上ベクトルの設定
-	camera.up.set(0, 1, 0);
-	//カメラの中心位置ベクトルの設定
-	camera.lookAt({ x: 0, y: 0, z: 0 }); //トラックボール利用時は自動的に無効
+        //シーンオブジェクトの生成
+        scene = new THREE.Scene();
+      }
+      ////////////////////////////////////////////////////////////////////
+      // カメラ初期化関数の定義
+      ////////////////////////////////////////////////////////////////////
+      //グローバル変数の宣言
+      var camera; //カメラオブジェクト
+      function initCamera() {
+        //カメラオブジェクトの生成
+        camera = new THREE.PerspectiveCamera(
+          45,
+          canvasFrame.clientWidth / canvasFrame.clientHeight,
+          1,
+          10000
+        );
+        //カメラの位置の設定
+        camera.position.set(0, 0, 130);
+        //カメラの上ベクトルの設定
+        camera.up.set(0, 1, 0);
+        //カメラの中心位置ベクトルの設定
+        camera.lookAt({ x: 0, y: 0, z: 0 }); //トラックボール利用時は自動的に無効
 
-	//トラックボールオブジェクトの宣言
-	trackball = new THREE.TrackballControls(camera, canvasFrame);
+        //トラックボールオブジェクトの宣言
+        trackball = new THREE.TrackballControls(camera, canvasFrame);
 
-	//トラックボール動作範囲のサイズとオフセットの設定
-	trackball.screen.width = canvasFrame.clientWidth;                        //横幅
-	trackball.screen.height = canvasFrame.clientHeight;                      //縦幅
-	trackball.screen.offsetLeft = canvasFrame.getBoundingClientRect().left;  //左オフセット
-	trackball.screen.offsetTop = canvasFrame.getBoundingClientRect().top;    //右オフセット
+        //トラックボール動作範囲のサイズとオフセットの設定
+        trackball.screen.width = canvasFrame.clientWidth; //横幅
+        trackball.screen.height = canvasFrame.clientHeight; //縦幅
+        trackball.screen.offsetLeft = canvasFrame.getBoundingClientRect().left; //左オフセット
+        trackball.screen.offsetTop = canvasFrame.getBoundingClientRect().top; //右オフセット
 
-	//トラックボールの回転無効化と回転速度の設定
-	trackball.noRotate = false;
-	trackball.rotateSpeed = 4.0;
+        //トラックボールの回転無効化と回転速度の設定
+        trackball.noRotate = false;
+        trackball.rotateSpeed = 4.0;
 
-	//トラックボールの拡大無効化と拡大速度の設定
-	trackball.noZoom = false;
-	trackball.zoomSpeed = 4.0;
+        //トラックボールの拡大無効化と拡大速度の設定
+        trackball.noZoom = false;
+        trackball.zoomSpeed = 4.0;
 
-	//トラックボールのカメラ中心移動の無効化と中心速度の設定
-	trackball.noPan = false;
-	trackball.panSpeed = 1.0;
-	trackball.target = new THREE.Vector3(0, 0, 0);
+        //トラックボールのカメラ中心移動の無効化と中心速度の設定
+        trackball.noPan = false;
+        trackball.panSpeed = 1.0;
+        trackball.target = new THREE.Vector3(0, 0, 0);
 
-	//トラックボールのスタティックムーブの有効化
-	trackball.staticMoving = true;
-	//トラックボールのダイナミックムーブ時の減衰定数
-	trackball.dynamicDampingFactor = 0.3;
-}
-////////////////////////////////////////////////////////////////////
-// 光源初期化関数の定義
-////////////////////////////////////////////////////////////////////
-//グローバル変数の宣言
-var directionalLight,  //平行光源オブジェクト
-    ambientLight;      //環境光オブジェクト
-function initLight() {
-	//平行光源オブジェクトの生成
-	directionalLight = new THREE.DirectionalLight(0xDDDDDD, 1.0, 0);
-	//平行光源オブジェクトの位置の設定
-	directionalLight.position.set(50, 20, 100);
-	//平行光源オブジェクトのシーンへの追加
-	scene.add(directionalLight);
+        //トラックボールのスタティックムーブの有効化
+        trackball.staticMoving = true;
+        //トラックボールのダイナミックムーブ時の減衰定数
+        trackball.dynamicDampingFactor = 0.3;
+      }
+      ////////////////////////////////////////////////////////////////////
+      // 光源初期化関数の定義
+      ////////////////////////////////////////////////////////////////////
+      //グローバル変数の宣言
+      var directionalLight, //平行光源オブジェクト
+        ambientLight; //環境光オブジェクト
+      function initLight() {
+        //平行光源オブジェクトの生成
+        directionalLight = new THREE.DirectionalLight(0xdddddd, 1.0, 0);
+        //平行光源オブジェクトの位置の設定
+        directionalLight.position.set(50, 20, 100);
+        //平行光源オブジェクトのシーンへの追加
+        scene.add(directionalLight);
 
-	//環境光オブジェクトの生成
-	ambientLight = new THREE.AmbientLight(0x222222);
-	//環境光オブジェクトのシーンへの追加
-	scene.add(ambientLight);
-}
-////////////////////////////////////////////////////////////////////
-// オブジェクト初期化関数の定義
-////////////////////////////////////////////////////////////////////
-//グローバル変数の宣言
-var axis; //軸オブジェクト
-var plane; //平面オブジェクト
-function initObject() {
-	//軸オブジェクトの生成
-	axis = new THREE.AxisHelper(100);
-	//軸オブジェクトのシーンへの追加
-	// scene.add(axis);
-	//軸オブジェクトの位置座標を設定
-	axis.position.set(0, 0, 0);
+        //環境光オブジェクトの生成
+        ambientLight = new THREE.AmbientLight(0x222222);
+        //環境光オブジェクトのシーンへの追加
+        scene.add(ambientLight);
+      }
+      ////////////////////////////////////////////////////////////////////
+      // オブジェクト初期化関数の定義
+      ////////////////////////////////////////////////////////////////////
+      //グローバル変数の宣言
+      var axis; //軸オブジェクト
+      var plane; //平面オブジェクト
+      function initObject() {
+        //軸オブジェクトの生成
+        axis = new THREE.AxisHelper(100);
+        //軸オブジェクトのシーンへの追加
+        // scene.add(axis);
+        //軸オブジェクトの位置座標を設定
+        axis.position.set(0, 0, 0);
 
-	//形状オブジェクトの宣言と生成
-	var geometry = new THREE.PlaneGeometry(100, 100, 10, 10);
-	//材質オブジェクトの宣言と生成
-	var material = new THREE.ShaderMaterial({
-		uniforms: {
-			uWidth : { value: canvasFrame.clientWidth }
-		},
-		vertexShader: document.getElementById('vertexShader').textContent,
-		fragmentShader: document.getElementById('fragmentShader').textContent
-	});
-	//平面オブジェクトの生成
-	plane = new THREE.Mesh(geometry, material);
-	//平面オブジェクトのシーンへの追加
-	scene.add(plane);
-	//平面オブジェクトの位置座標を設定
-	plane.position.set(0, 0, 0);
-}
+        //形状オブジェクトの宣言と生成
+        var geometry = new THREE.PlaneGeometry(100, 100, 10, 10);
+        //材質オブジェクトの宣言と生成
+        var material = new THREE.ShaderMaterial({
+          uniforms: {
+            uWidth: { value: canvasFrame.clientWidth },
+          },
+          vertexShader: document.getElementById("vertexShader").textContent,
+          fragmentShader: document.getElementById("fragmentShader").textContent,
+        });
+        //平面オブジェクトの生成
+        plane = new THREE.Mesh(geometry, material);
+        //平面オブジェクトのシーンへの追加
+        scene.add(plane);
+        //平面オブジェクトの位置座標を設定
+        plane.position.set(0, 0, 0);
+      }
 
-////////////////////////////////////////////////////////////////////
-// 無限ループ関数の定義
-////////////////////////////////////////////////////////////////////
-//グローバル変数の宣言
-var step = 0; //ステップ数
-function loop() {
-	//トラックボールによるカメラオブジェクトのプロパティの更新
-	trackball.update();
-	//ステップ数のインクリメント
-	step++;
+      ////////////////////////////////////////////////////////////////////
+      // 無限ループ関数の定義
+      ////////////////////////////////////////////////////////////////////
+      //グローバル変数の宣言
+      var step = 0; //ステップ数
+      function loop() {
+        //トラックボールによるカメラオブジェクトのプロパティの更新
+        trackball.update();
+        //ステップ数のインクリメント
+        step++;
 
-	//レンダリング
-	renderer.render(scene, camera);
+        //レンダリング
+        renderer.render(scene, camera);
 
-	//画像生成
-	makePicture();
+        //画像生成
+        makePicture();
 
-	//「loop()」関数の呼び出し
-	requestAnimationFrame(loop);
-}
+        //「loop()」関数の呼び出し
+        requestAnimationFrame(loop);
+      }
 
-//////////////////////////////////////////////
-// 画像作成用	
-//////////////////////////////////////////////
-var makePictureFlag = false;
+      //////////////////////////////////////////////
+      // 画像作成用
+      //////////////////////////////////////////////
+      var makePictureFlag = false;
 
-//画像作成用イベント
-window.addEventListener('keydown', function (e) {
+      //画像作成用イベント
+      window.addEventListener("keydown", function (e) {
+        //キーボードイベント時のキー取得
+        var keyChar = String.fromCharCode(e.keyCode).toLowerCase();
 
-	//キーボードイベント時のキー取得
-	var keyChar = String.fromCharCode( e.keyCode ).toLowerCase();
+        //キーボードの「s」が押された場合
+        if (keyChar == "s") {
+          makePictureFlag = true;
+        }
+      });
+      //画像作成関数
+      function makePicture() {
+        if (!makePictureFlag) return;
 
-	//キーボードの「s」が押された場合
-	if(keyChar == "s") {
-		makePictureFlag = true;
-	}
+        //グラフィックスが描画されたcanvas要素
+        var canvas = renderer.domElement;
 
-});	
-//画像作成関数
-function makePicture(){
+        //a要素の生成
+        var a = document.createElement("a");
+        //canvas要素→DataURL形式
+        a.href = canvas.toDataURL("image/png");
+        //PNGファイル名の命名
+        a.download = "picture";
+        a.innerHTML = "ダウンロード";
 
-	if( !makePictureFlag ) return;
-
-	//グラフィックスが描画されたcanvas要素
-	var canvas = renderer.domElement;
-
-	//a要素の生成
-	var a = document.createElement("a");
-	//canvas要素→DataURL形式
-	a.href = canvas.toDataURL("image/png");
-	//PNGファイル名の命名
-	a.download = "picture";
-	a.innerHTML = "ダウンロード";
-
-	//id="thumbnails"のdiv要素の子要素にa要素を追加	
-	document.getElementsByTagName( "body" )[0].appendChild(a);
-	makePictureFlag = false;
-
-}
-</script>
-<!--------------------------------------------------------------------------------------
+        //id="thumbnails"のdiv要素の子要素にa要素を追加
+        document.getElementsByTagName("body")[0].appendChild(a);
+        makePictureFlag = false;
+      }
+    </script>
+    <!--------------------------------------------------------------------------------------
 	シェーダーの定義
  ---------------------------------------------------------------------------------------->
-<script id="vertexShader" type="x-shader/x-vertex">
-varying float u_time;
-void main()	{
-	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-}
-</script>
-<script id="fragmentShader" type="x-shader/x-fragment">
-#version 300 es
-precision highp float;
-precision highp int;
-out vec4 fragColor;
-uniform float u_time;
-uniform vec2 u_resolution;
-int channel;
+    <script id="vertexShader" type="x-shader/x-vertex">
+      varying float u_time;
+      void main()	{
+      	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+      }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
 
-//start hash
-uvec3 k = uvec3(0x456789abu, 0x6789ab45u, 0x89ab4567u);
-uvec3 u = uvec3(1, 2, 3);
-const uint UINT_MAX = 0xffffffffu;
-uint uhash11(uint n){
-    n ^= (n << u.x);
-    n ^= (n >> u.x);
-    n *= k.x;
-    n ^= (n << u.x);
-    return n * k.x;
-}
-uvec2 uhash22(uvec2 n){
-    n ^= (n.yx << u.xy);
-    n ^= (n.yx >> u.xy);
-    n *= k.xy;
-    n ^= (n.yx << u.xy);
-    return n * k.xy;
-}
-uvec3 uhash33(uvec3 n){
-    n ^= (n.yzx << u);
-    n ^= (n.yzx >> u);
-    n *= k;
-    n ^= (n.yzx << u);
-    return n * k;
-}
-float hash11(float p){
-    uint n = floatBitsToUint(p);
-    return float(uhash11(n)) / float(UINT_MAX);
-}
-float hash21(vec2 p){
-    uvec2 n = floatBitsToUint(p);
-    return float(uhash22(n).x) / float(UINT_MAX);
-}
-float hash31(vec3 p){
-    uvec3 n = floatBitsToUint(p);
-    return float(uhash33(n).x) / float(UINT_MAX);
-}
-vec2 hash22(vec2 p){
-    uvec2 n = floatBitsToUint(p);
-    return vec2(uhash22(n)) / vec2(UINT_MAX);
-}
-vec3 hash33(vec3 p){
-    uvec3 n = floatBitsToUint(p);
-    return vec3(uhash33(n)) / vec3(UINT_MAX);
-}
-//end hash
+      uniform float u_time;
+      vec2 u_resolution = vec2(500, 500)
+      int channel;
 
-//start vnoise
-float vnoise21(vec2 p){
-    vec2 n = floor(p);
-    float[4] v;
-    for (int j = 0; j < 2; j ++){
-        for (int i = 0; i < 2; i++){
-            v[i+2*j] = hash21(n + vec2(i, j));
-        }
-    }
-    vec2 f = fract(p);
-    f = f * f * f * (10.0 - 15.0 * f + 6.0 * f * f);
-    return mix(mix(v[0], v[1], f[0]), mix(v[2], v[3], f[0]), f[1]);
-}
-//end vnoise
+      //start hash
+      uvec3 k = uvec3(0x456789abu, 0x6789ab45u, 0x89ab4567u);
+      uvec3 u = uvec3(1, 2, 3);
+      const uint UINT_MAX = 0xffffffffu;
+      uint uhash11(uint n){
+          n ^= (n << u.x);
+          n ^= (n >> u.x);
+          n *= k.x;
+          n ^= (n << u.x);
+          return n * k.x;
+      }
+      uvec2 uhash22(uvec2 n){
+          n ^= (n.yx << u.xy);
+          n ^= (n.yx >> u.xy);
+          n *= k.xy;
+          n ^= (n.yx << u.xy);
+          return n * k.xy;
+      }
+      uvec3 uhash33(uvec3 n){
+          n ^= (n.yzx << u);
+          n ^= (n.yzx >> u);
+          n *= k;
+          n ^= (n.yzx << u);
+          return n * k;
+      }
+      float hash11(float p){
+          uint n = floatBitsToUint(p);
+          return float(uhash11(n)) / float(UINT_MAX);
+      }
+      float hash21(vec2 p){
+          uvec2 n = floatBitsToUint(p);
+          return float(uhash22(n).x) / float(UINT_MAX);
+      }
+      float hash31(vec3 p){
+          uvec3 n = floatBitsToUint(p);
+          return float(uhash33(n).x) / float(UINT_MAX);
+      }
+      vec2 hash22(vec2 p){
+          uvec2 n = floatBitsToUint(p);
+          return vec2(uhash22(n)) / vec2(UINT_MAX);
+      }
+      vec3 hash33(vec3 p){
+          uvec3 n = floatBitsToUint(p);
+          return vec3(uhash33(n)) / vec3(UINT_MAX);
+      }
+      //end hash
 
-//start pnoise
-float gtable2(vec2 lattice, vec2 p){
-    uvec2 n = floatBitsToUint(lattice);
-    uint ind = uhash22(n).x >> 29;
-    float u = 0.92387953 * (ind < 4u ? p.x : p.y);  //0.92387953 = cos(pi/8)
-    float v = 0.38268343 * (ind < 4u ? p.y : p.x);  //0.38268343 = sin(pi/8)
-    return ((ind & 1u) == 0u ? u : -u) + ((ind & 2u) == 0u? v : -v);
-}
-float pnoise21(vec2 p){
-    vec2 n = floor(p);
-    vec2 f = fract(p);
-    float[4] v;
-    for (int j = 0; j < 2; j ++){
-        for (int i = 0; i < 2; i++){
-            v[i+2*j] = gtable2(n + vec2(i, j), f - vec2(i, j));
-        }
-    }
-    f = f * f * f * (10.0 - 15.0 * f + 6.0 * f * f);
-    return 0.5 * mix(mix(v[0], v[1], f[0]), mix(v[2], v[3], f[0]), f[1]) + 0.5;
-}
-//end pnoise
+      //start vnoise
+      float vnoise21(vec2 p){
+          vec2 n = floor(p);
+          float[4] v;
+          for (int j = 0; j < 2; j ++){
+              for (int i = 0; i < 2; i++){
+                  v[i+2*j] = hash21(n + vec2(i, j));
+              }
+          }
+          vec2 f = fract(p);
+          f = f * f * f * (10.0 - 15.0 * f + 6.0 * f * f);
+          return mix(mix(v[0], v[1], f[0]), mix(v[2], v[3], f[0]), f[1]);
+      }
+      //end vnoise
 
-float fbm21(vec2 p, float g){
-    float val = 0.0;
-    float amp = 1.0;
-    float freq = 1.0;
-    for (int i = 0; i < 4; i++){
-        val += amp * (vnoise21(freq * p) - 0.5);
-        amp *= g;
-        freq *= 2.01;
-    }
-    return 0.5 * val + 0.5;
-}
-float base21(vec2 p){
-    return channel == 0 ? fbm21(p, 0.5): 
-        pnoise21(p);
-}
-float warp21(vec2 p, float g){
-    float val = 0.0;
-    for (int i = 0; i < 4; i++){
-        val = base21(p + g * val);
-    }
-    return val;
-}
-void main(){
-    vec2 pos = gl_FragCoord.xy/min(u_resolution.x, u_resolution.y);
-    channel = int(2.0 * gl_FragCoord.x / u_resolution.x);
-    pos = 10.0 * pos;
-    float g = abs(mod(u_time, 10.0) - 5.0);
-    fragColor = vec4(vec3(warp21(pos, g)), 1.0);
-}
-</script>
-</head>
-<body>
-	<div id="canvas-frame"></div><!-- canvas要素を配置するdiv要素 -->
-</body>
+      //start pnoise
+      float gtable2(vec2 lattice, vec2 p){
+          uvec2 n = floatBitsToUint(lattice);
+          uint ind = uhash22(n).x >> 29;
+          float u = 0.92387953 * (ind < 4u ? p.x : p.y);  //0.92387953 = cos(pi/8)
+          float v = 0.38268343 * (ind < 4u ? p.y : p.x);  //0.38268343 = sin(pi/8)
+          return ((ind & 1u) == 0u ? u : -u) + ((ind & 2u) == 0u? v : -v);
+      }
+      float pnoise21(vec2 p){
+          vec2 n = floor(p);
+          vec2 f = fract(p);
+          float[4] v;
+          for (int j = 0; j < 2; j ++){
+              for (int i = 0; i < 2; i++){
+                  v[i+2*j] = gtable2(n + vec2(i, j), f - vec2(i, j));
+              }
+          }
+          f = f * f * f * (10.0 - 15.0 * f + 6.0 * f * f);
+          return 0.5 * mix(mix(v[0], v[1], f[0]), mix(v[2], v[3], f[0]), f[1]) + 0.5;
+      }
+      //end pnoise
+
+      float fbm21(vec2 p, float g){
+          float val = 0.0;
+          float amp = 1.0;
+          float freq = 1.0;
+          for (int i = 0; i < 4; i++){
+              val += amp * (vnoise21(freq * p) - 0.5);
+              amp *= g;
+              freq *= 2.01;
+          }
+          return 0.5 * val + 0.5;
+      }
+      float base21(vec2 p){
+          return channel == 0 ? fbm21(p, 0.5):
+              pnoise21(p);
+      }
+      float warp21(vec2 p, float g){
+          float val = 0.0;
+          for (int i = 0; i < 4; i++){
+              val = base21(p + g * val);
+          }
+          return val;
+      }
+      void main(){
+          vec2 pos = gl_FragCoord.xy/min(u_resolution.x, u_resolution.y);
+          channel = int(2.0 * gl_FragCoord.x / u_resolution.x);
+          pos = 10.0 * pos;
+          float g = abs(mod(u_time, 10.0) - 5.0);
+          fragColor = vec4(vec3(warp21(pos, g)), 1.0);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="canvas-frame"></div>
+    <!-- canvas要素を配置するdiv要素 -->
+  </body>
 </html>
+
+<!-- 24-01-07 -->
+<!-- ①これをネット上に表示する -->
